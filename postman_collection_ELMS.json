@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "elms-collection-001",
+    "name": "ELMS Microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Departments - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"departmentName\": \"Engineering\",\n  \"description\": \"Engineering department\"\n}"
+        },
+        "url": {
+          "raw": "{{department_base}}/departments",
+          "host": ["{{department_base}}"],
+          "path": ["departments"]
+        }
+      }
+    },
+    {
+      "name": "Departments - Get All",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{department_base}}/departments",
+          "host": ["{{department_base}}"],
+          "path": ["departments"]
+        }
+      }
+    },
+    {
+      "name": "Employees - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeCode\": \"E001\",\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"departmentId\": {{departmentId}},\n  \"designation\": \"Engineer\",\n  \"joiningDate\": \"2026-01-01\",\n  \"leaveBalance\": 20,\n  \"role\": \"USER\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{employee_base}}/api/v1/employees",
+          "host": ["{{employee_base}}"],
+          "path": ["api","v1","employees"]
+        }
+      }
+    },
+    {
+      "name": "Employees - Get by Id",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{employee_base}}/api/v1/employees/{{employeeId}}",
+          "host": ["{{employee_base}}"],
+          "path": ["api","v1","employees","{{employeeId}}"]
+        }
+      }
+    },
+    {
+      "name": "Leave - Apply",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeId\": {{employeeId}},\n  \"leaveType\": \"ANNUAL\",\n  \"startDate\": \"2026-09-10\",\n  \"endDate\": \"2026-09-12\",\n  \"reason\": \"Vacation\"\n}"
+        },
+        "url": {
+          "raw": "{{leave_base}}/api/v1/leave/apply",
+          "host": ["{{leave_base}}"],
+          "path": ["api","v1","leave","apply"]
+        }
+      }
+    },
+    {
+      "name": "Leave - Approve",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{leave_base}}/api/v1/leave/{{leaveId}}/approve?approverId={{approverId}}",
+          "host": ["{{leave_base}}"],
+          "path": ["api","v1","leave","{{leaveId}}","approve"],
+          "query": [ { "key": "approverId", "value": "{{approverId}}" } ]
+        }
+      }
+    },
+    {
+      "name": "Notifications - Send",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"recipient\": \"john.doe@example.com\",\n  \"subject\": \"Test Notification\",\n  \"message\": \"Hello from Notification Service\"\n}"
+        },
+        "url": {
+          "raw": "{{notification_base}}/notifications/send",
+          "host": ["{{notification_base}}"],
+          "path": ["notifications","send"]
+        }
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,99 @@
+spring:
+  application:
+    name: api-gateway
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elms_gateway
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: employee-service
+            uri: lb://employee-service
+            predicates:
+              - Path=/api/employees/**
+            filters:
+              - RewritePath=/api/employees(?<segment>/?.*), /employees${segment}
+              - RateLimiter=default
+
+          - id: department-service
+            uri: lb://department-service
+            predicates:
+              - Path=/api/departments/**
+            filters:
+              - RewritePath=/api/departments(?<segment>/?.*), /departments${segment}
+              - RateLimiter=default
+
+          - id: leave-service
+            uri: lb://leave-service
+            predicates:
+              - Path=/api/leaves/**
+            filters:
+              - RewritePath=/api/leaves(?<segment>/?.*), /leave${segment}
+              - RateLimiter=default
+
+          - id: notification-service
+            uri: lb://notification-service
+            predicates:
+              - Path=/api/notifications/**
+            filters:
+              - RewritePath=/api/notifications(?<segment>/?.*), /notifications${segment}
+              - RateLimiter=default
+
+      # Rate Limiting Configuration (Story 14)
+      default-filters:
+        - name: RateLimiter
+          args:
+            redis-rate-limiter:
+              replenish-rate: 100
+              burst-capacity: 100
+              requested-tokens: 1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+
+jwt:
+  secret: ElmsSecretKeyForJWTValidationAcrossAllMicroservices2026
+  expiration: 3600000 # 1 hour in milliseconds
+
+# Actuator Configuration (Story 15)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+server:
+  port: 8080
